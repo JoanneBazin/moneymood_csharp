@@ -9,12 +9,6 @@ namespace MoneyMood.Services.Auth;
 public class SessionService(AppDbContext context) : ISessionService
 {
 
-    private static string GenerateSessionToken()
-    {
-        var bytes = RandomNumberGenerator.GetBytes(32);
-        return Convert.ToHexString(bytes);
-    }
-
     public async Task<string> CreateSessionAsync(string userId)
     {
         var token = GenerateSessionToken();
@@ -57,6 +51,12 @@ public class SessionService(AppDbContext context) : ISessionService
             Session = session.Id,
             ShouldRefresh = shouldRefresh
         };
+    }
+
+    private static string GenerateSessionToken()
+    {
+        var bytes = RandomNumberGenerator.GetBytes(32);
+        return Convert.ToHexString(bytes);
     }
 
 }

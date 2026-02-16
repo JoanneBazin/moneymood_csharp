@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoneyMood.Dtos.Auth;
@@ -9,7 +8,7 @@ namespace MoneyMood.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IAuthService service) : ControllerBase
+public class AuthController(IAuthService service) : BaseController
 {
     [AllowAnonymous]    
     [HttpPost("signup")]
@@ -62,7 +61,7 @@ public class AuthController(IAuthService service) : ControllerBase
     [HttpGet("session")]
     public async Task<ActionResult<string>> GetSession()
     {
-       var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? throw ApiException.Unauthorized("UserId inconnu");
+       var userId = GetUserId();
        var user = await service.GetSessionAsync(userId);
         return Ok(user);
     }
