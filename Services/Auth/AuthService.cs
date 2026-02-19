@@ -22,7 +22,7 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
         {
           await context.SaveChangesAsync();   
         }
-        catch (DbUpdateException ex) when (ex.InnerException?.Message.Contains("UNIQUE") == true)
+        catch (DbUpdateException ex) when (DbExceptionHelper.IsUniqueConstraintViolation(ex))
         {
             throw ApiException.Conflict("Email déjà utilisé");
         }

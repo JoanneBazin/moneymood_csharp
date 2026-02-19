@@ -5,6 +5,7 @@ using MoneyMood.Auth;
 using MoneyMood.Data;
 using MoneyMood.Middlewares;
 using MoneyMood.Services.Auth;
+using MoneyMood.Services.Budget;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddControllers(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+builder.Services.AddScoped<IMonthlyBudgetService, MonthlyBudgetService>();
+builder.Services.AddScoped<IBudgetCalculationService, BudgetCalculationService>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options =>
