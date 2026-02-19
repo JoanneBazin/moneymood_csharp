@@ -1,5 +1,5 @@
 public enum EntryType
 {
-    Fixed = 0,
-    Monthly = 1
+    Income = 0,
+    Charge = 1
 }

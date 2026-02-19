@@ -3,7 +3,7 @@ namespace MoneyMood.Dtos.Auth;
 public class SessionInfo
 {
     
-    public string UserId { get; set; } = string.Empty;
-    public string Session { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
+    public Guid Session { get; set; }
     public bool ShouldRefresh { get; set; }
 }

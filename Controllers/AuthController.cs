@@ -16,7 +16,7 @@ public class AuthController(IAuthService service) : BaseController
     {
         var result = await service.SignUpAsync(request);
 
-        Response.Cookies.Append("session", result.SessionToken, new CookieOptions
+        Response.Cookies.Append("session", result.SessionToken.ToString(), new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
@@ -33,7 +33,7 @@ public class AuthController(IAuthService service) : BaseController
     {
         var result = await service.SignInAsync(request);
 
-        Response.Cookies.Append("session", result.SessionToken, new CookieOptions
+        Response.Cookies.Append("session", result.SessionToken.ToString(), new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
@@ -45,21 +45,21 @@ public class AuthController(IAuthService service) : BaseController
     }
 
     [HttpPost("logout")]
-    public async Task<ActionResult<string>> Logout()
+    public async Task<ActionResult<Guid>> Logout()
     {
         var sessionToken = Request.Cookies["session"];
-        if (sessionToken is null)
-            throw ApiException.Unauthorized("Session non trouvé");
+        if (sessionToken is null || !Guid.TryParse(sessionToken, out var token))
+            throw ApiException.Unauthorized("Session non valide");
 
         
-        await service.LogoutAsync(sessionToken);
+        await service.LogoutAsync(token);
 
         Response.Cookies.Delete("session");
         return Ok("Déconnexion réussie");
     }
 
     [HttpGet("session")]
-    public async Task<ActionResult<string>> GetSession()
+    public async Task<ActionResult<Guid>> GetSession()
     {
        var userId = GetUserId();
        var user = await service.GetSessionAsync(userId);

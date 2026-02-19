@@ -2,10 +2,10 @@ namespace MoneyMood.Models;
 
 public class Session
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; } = Guid.NewGuid();
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime ExpiresAt { get; set; }
 
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 }

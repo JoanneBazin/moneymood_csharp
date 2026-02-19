@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Moneymood.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260211153421_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260219142736_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,8 +27,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.Expense", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(10, 2)
@@ -43,18 +44,18 @@ namespace Moneymood.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("MonthlyBudgetId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("MonthlyBudgetId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("SpecialBudgetId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("SpecialBudgetId")
+                        .HasColumnType("uuid");
 
-                    b.Property<string>("SpecialCategoryId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("SpecialCategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("WeekNumber")
                         .HasColumnType("integer");
@@ -70,8 +71,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.FixedEntry", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(10, 2)
@@ -88,9 +90,8 @@ namespace Moneymood.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -101,8 +102,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.MonthlyBudget", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -120,9 +122,8 @@ namespace Moneymood.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("WeeklyBudget")
                         .HasPrecision(10, 2)
@@ -141,8 +142,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.MonthlyEntry", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<decimal>("Amount")
                         .HasPrecision(10, 2)
@@ -151,9 +153,8 @@ namespace Moneymood.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("MonthlyBudgetId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("MonthlyBudgetId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -172,8 +173,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.Session", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -181,9 +183,8 @@ namespace Moneymood.Migrations
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -194,8 +195,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.SpecialBudget", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -212,9 +214,8 @@ namespace Moneymood.Migrations
                         .HasPrecision(10, 2)
                         .HasColumnType("numeric(10,2)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -225,16 +226,16 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.SpecialCategory", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("SpecialBudgetId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<Guid>("SpecialBudgetId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -245,8 +246,9 @@ namespace Moneymood.Migrations
 
             modelBuilder.Entity("MoneyMood.Models.User", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");

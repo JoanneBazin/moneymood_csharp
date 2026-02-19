@@ -2,7 +2,7 @@ namespace MoneyMood.Models;
 
 public class MonthlyBudget
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; set; } = Guid.NewGuid();
     public int Month { get; set; }
     public int Year { get; set; }
     public bool IsCurrent { get; set; } = false;
@@ -13,6 +13,6 @@ public class MonthlyBudget
 
     public ICollection<Expense> Expenses { get; set; } = [];
     public ICollection<MonthlyEntry> MonthlyEntries { get; set; } = [];
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 }

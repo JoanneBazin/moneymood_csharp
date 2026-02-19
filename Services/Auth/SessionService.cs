@@ -1,7 +1,5 @@
-using System.Security.Cryptography;
 using MoneyMood.Data;
 using MoneyMood.Dtos.Auth;
-using MoneyMood.Exceptions;
 using MoneyMood.Models;
 
 namespace MoneyMood.Services.Auth;
@@ -9,21 +7,19 @@ namespace MoneyMood.Services.Auth;
 public class SessionService(AppDbContext context) : ISessionService
 {
 
-    public async Task<string> CreateSessionAsync(string userId)
+    public async Task<Guid> CreateSessionAsync(Guid userId)
     {
-        var token = GenerateSessionToken();
         var session = new Session
         {
             UserId = userId,
-            Id = token,
             ExpiresAt = DateTime.UtcNow.AddDays(30)
         };
         context.Sessions.Add(session);
         await context.SaveChangesAsync();
-        return token;
+        return session.Id;
     }
 
-    public async Task<SessionInfo?> ValidateSessionAsync(string sessionId)
+    public async Task<SessionInfo?> ValidateSessionAsync(Guid sessionId)
     {
         var session = await context.Sessions.FindAsync(sessionId);
 
@@ -51,12 +47,6 @@ public class SessionService(AppDbContext context) : ISessionService
             Session = session.Id,
             ShouldRefresh = shouldRefresh
         };
-    }
-
-    private static string GenerateSessionToken()
-    {
-        var bytes = RandomNumberGenerator.GetBytes(32);
-        return Convert.ToHexString(bytes);
     }
 
 }

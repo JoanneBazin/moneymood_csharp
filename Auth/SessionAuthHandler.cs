@@ -15,8 +15,8 @@ public class SessionAuthHandler(
 {
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var token = Request.Cookies["session"];
-        if (token is null)
+        var tokenString = Request.Cookies["session"];
+        if (tokenString is null || !Guid.TryParse(tokenString, out var token))
         {
             Response.Cookies.Delete("session");
             return AuthenticateResult.Fail("Pas de cookie de session");
@@ -31,7 +31,7 @@ public class SessionAuthHandler(
 
         if (result.ShouldRefresh)
         {
-            Response.Cookies.Append("session", token, new CookieOptions
+            Response.Cookies.Append("session", token.ToString(), new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
@@ -43,7 +43,7 @@ public class SessionAuthHandler(
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, result.UserId)
+            new Claim(ClaimTypes.NameIdentifier, result.UserId.ToString())
         };
 
         var identity = new ClaimsIdentity(claims, Scheme.Name);

@@ -32,13 +32,7 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
 
         return new AuthResponse
         {
-            User = new UserResponse
-            {
-                Id = newUser.Id,
-                Email = newUser.Email,
-                Name = newUser.Name,
-                EnabledExpenseValidation = newUser.EnabledExpenseValidation
-            },
+            User = MapUserToResponse(newUser),
             SessionToken = sessionToken
         };
     }
@@ -55,18 +49,12 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
 
         return new AuthResponse
         {
-            User = new UserResponse
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Name = user.Name,
-                EnabledExpenseValidation = user.EnabledExpenseValidation
-            },
+            User = MapUserToResponse(user),
             SessionToken = sessionToken
         };
     }
 
-    public async Task LogoutAsync(string sessionToken)
+    public async Task LogoutAsync(Guid sessionToken)
     {
         var session = await context.Sessions.FindAsync(sessionToken);
         if (session is null)
@@ -76,18 +64,20 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
         await context.SaveChangesAsync();
     }
 
-    public async Task<UserResponse> GetSessionAsync(string userId)
+    public async Task<UserResponse> GetSessionAsync(Guid userId)
     {
         var user = await context.Users.FindAsync(userId);
         if (user is null)
             throw ApiException.NotFound("Utilisateur non trouvé");
 
-        return new UserResponse
-        {
-            Id = user.Id,
-            Email = user.Email,
-            Name = user.Name,
-            EnabledExpenseValidation = user.EnabledExpenseValidation,
-        };
+        return MapUserToResponse(user);
     }
+
+    private static UserResponse MapUserToResponse(User user) => new()
+    {
+        Id = user.Id,
+        Email = user.Email,
+        Name = user.Name,
+        EnabledExpenseValidation = user.EnabledExpenseValidation,
+    };
 }
