@@ -46,7 +46,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
             }
 
             await transaction.CommitAsync();
-            return MapToResponse(budget);
+            return MapToBudgetResponse(budget);
         }
 
         catch (DbUpdateException ex) when (DbExceptionHelper.IsUniqueConstraintViolation(ex))
@@ -65,7 +65,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
         var budget = await context.MonthlyBudgets
             .FirstOrDefaultAsync(b => b.UserId == userId && b.Year == year && b.Month == month) ?? throw ApiException.NotFound("Budget mensuel introuvable");
         
-        return MapHistoryToResponse(budget);
+        return MapToHistoryResponse(budget);
     }
 
     public async Task<MonthlyBudgetResponse?> GetCurrentMonthlyBudgetAsync(Guid userId)
@@ -76,7 +76,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
             .FirstOrDefaultAsync(b => b.UserId == userId && b.IsCurrent);
         
         if (budget is null) return null;
-        return MapToResponse(budget);
+        return MapToBudgetResponse(budget);
     }
 
     public async Task<MonthlyBudgetResponse> GetMonthlyBudgetByIdAsync(Guid userId, Guid budgetId)
@@ -87,7 +87,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
             .FirstOrDefaultAsync(b => b.UserId == userId && b.Id == budgetId)
             ?? throw ApiException.NotFound("Budget mensuel introuvable");
 
-        return MapToResponse(budget);
+        return MapToBudgetResponse(budget);
     }
 
 
@@ -132,7 +132,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
             }
 
             await transaction.CommitAsync();
-            return MapToResponse(budget);
+            return MapToBudgetResponse(budget);
         }
 
         catch
@@ -157,7 +157,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
         };
     }
 
-    private static MonthlyBudgetResponse MapToResponse(MonthlyBudget budget) => new()
+    private static MonthlyBudgetResponse MapToBudgetResponse(MonthlyBudget budget) => new()
     {
         Id = budget.Id,
         Month = budget.Month,
@@ -174,7 +174,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
             .Select(e => new EntryResponse {Id = e.Id, Name = e.Name, Amount = e.Amount}),
             Expenses = []
     };
-    private static HistoryResponse MapHistoryToResponse(MonthlyBudget budget) => new()
+    private static HistoryResponse MapToHistoryResponse(MonthlyBudget budget) => new()
     {
         Id = budget.Id,
         Month = budget.Month,

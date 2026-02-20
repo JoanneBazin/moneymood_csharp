@@ -40,4 +40,23 @@ public class BudgetCalculationService : IBudgetCalculationService
         await context.SaveChangesAsync();
         return budget.RemainingBudget;
     }
+
+    public async Task<decimal> UpdateWeeklyBudgetAsync(Guid budgetId, AppDbContext context)
+    {
+        var budget = await context.MonthlyBudgets
+            .Include(b => b.MonthlyEntries)
+            .FirstOrDefaultAsync(b => b.Id == budgetId)
+            ?? throw ApiException.NotFound("Budget mensuel non trouvé");
+
+        var entriesByType = budget.MonthlyEntries.GroupBy(e => e.Type);
+        var incomes = entriesByType.FirstOrDefault(g => g.Key == EntryType.Income) ?? Enumerable.Empty<MonthlyEntry>();
+        var charges = entriesByType.FirstOrDefault(g => g.Key == EntryType.Charge) ?? Enumerable.Empty<MonthlyEntry>();
+
+        var remainingWithoutExpenses = CalculateMonthlyRemainingBudget(incomes, charges);
+
+        budget.WeeklyBudget = CalculateWeeklyBudget(remainingWithoutExpenses, budget.NumberOfWeeks);
+
+        await context.SaveChangesAsync();
+        return budget.WeeklyBudget;
+    }
 }

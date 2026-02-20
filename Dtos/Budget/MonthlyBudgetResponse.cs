@@ -1,3 +1,5 @@
+using MoneyMood.Dtos.Expense;
+
 namespace MoneyMood.Dtos.Budget;
 
 public class MonthlyBudgetResponse

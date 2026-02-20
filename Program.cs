@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using MoneyMood.Auth;
 using MoneyMood.Data;
 using MoneyMood.Middlewares;
+using MoneyMood.Services;
 using MoneyMood.Services.Auth;
 using MoneyMood.Services.Budget;
 
@@ -23,6 +24,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ISessionService, SessionService>();
 builder.Services.AddScoped<IMonthlyBudgetService, MonthlyBudgetService>();
+builder.Services.AddScoped<IMonthlyEntryService, MonthlyEntryService>();
+builder.Services.AddScoped<IExpenseService, ExpenseService>();
 builder.Services.AddScoped<IBudgetCalculationService, BudgetCalculationService>();
 
 

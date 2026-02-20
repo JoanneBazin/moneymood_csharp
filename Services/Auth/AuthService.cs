@@ -32,7 +32,7 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
 
         return new AuthResponse
         {
-            User = MapUserToResponse(newUser),
+            User = MapToUserResponse(newUser),
             SessionToken = sessionToken
         };
     }
@@ -49,7 +49,7 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
 
         return new AuthResponse
         {
-            User = MapUserToResponse(user),
+            User = MapToUserResponse(user),
             SessionToken = sessionToken
         };
     }
@@ -70,10 +70,10 @@ public class AuthService(AppDbContext context, IPasswordHasher hasher, ISessionS
         if (user is null)
             throw ApiException.NotFound("Utilisateur non trouvé");
 
-        return MapUserToResponse(user);
+        return MapToUserResponse(user);
     }
 
-    private static UserResponse MapUserToResponse(User user) => new()
+    private static UserResponse MapToUserResponse(User user) => new()
     {
         Id = user.Id,
         Email = user.Email,

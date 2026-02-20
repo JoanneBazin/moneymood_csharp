@@ -1,3 +1,5 @@
+using MoneyMood.Dtos.Entry;
+
 namespace MoneyMood.Dtos.Budget;
 
 public class CreateMonthlyBudgetRequest
@@ -6,6 +8,6 @@ public class CreateMonthlyBudgetRequest
     public int Year { get; set; }
     public bool IsCurrent { get; set; }
     public int NumberOfWeeks { get; set; }
-    public ICollection<CreateEntryRequest> Incomes { get; set; } = [];
-    public ICollection<CreateEntryRequest> Charges { get; set; } = [];
+    public ICollection<EntryRequest> Incomes { get; set; } = [];
+    public ICollection<EntryRequest> Charges { get; set; } = [];
 }
