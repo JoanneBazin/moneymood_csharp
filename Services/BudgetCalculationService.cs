@@ -23,6 +23,13 @@ public class BudgetCalculationService : IBudgetCalculationService
         return Math.Round(remainingBudget / numberOfWeeks, 0);
     }
 
+    public decimal CalculateSpecialRemainingBudget(decimal totalBudget, IEnumerable<IHasAmount>? expenses = null)
+    {
+        var totalExpenses = expenses?.Sum(x => x.Amount) ?? 0;
+
+        return totalBudget - totalExpenses;
+    }
+
     public async Task<decimal> UpdateMonthlyRemainingBudgetAsync(Guid budgetId, AppDbContext context)
     {
         var budget = await context.MonthlyBudgets
@@ -58,5 +65,19 @@ public class BudgetCalculationService : IBudgetCalculationService
 
         await context.SaveChangesAsync();
         return budget.WeeklyBudget;
+    }
+
+    public async Task<decimal> UpdateSpecialRemainingBudgetAsync(Guid budgetId, AppDbContext context)
+    {
+        var budget = await context.SpecialBudgets
+            .Include(b => b.Expenses)
+            .FirstOrDefaultAsync(b => b.Id == budgetId)
+            ?? throw ApiException.NotFound("Budget mensuel non trouvé");
+
+
+        budget.RemainingBudget = CalculateSpecialRemainingBudget(budget.TotalBudget, budget.Expenses);
+
+        await context.SaveChangesAsync();
+        return budget.RemainingBudget;
     }
 }

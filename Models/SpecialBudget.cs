@@ -9,6 +9,7 @@ public class SpecialBudget
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<Expense> Expenses { get; set; } = [];
+    public ICollection<SpecialCategory> Categories { get; set; } = [];
     public Guid UserId { get; set; }
     public User User { get; set; } = null!;
 }

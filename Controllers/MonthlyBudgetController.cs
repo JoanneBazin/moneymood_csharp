@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using MoneyMood.Dtos.Budget;
 using MoneyMood.Dtos.Entry;
 using MoneyMood.Dtos.Expense;
-using MoneyMood.Enums;
-using MoneyMood.Services;
 using MoneyMood.Services.Budget;
 
 namespace MoneyMood.Controllers;
@@ -13,14 +11,13 @@ namespace MoneyMood.Controllers;
 public class MonthlyBudgetController(
     IMonthlyBudgetService budgetService, 
     IMonthlyEntryService entryService,
-    IExpenseService expenseService
+    IMonthlyExpenseService expenseService
     ) : BaseController
 {
     [HttpPost]
     public async Task<ActionResult<MonthlyBudgetResponse>> CreateMonthlyBudget(CreateMonthlyBudgetRequest request)
     {
-        var userId = GetUserId();
-        var result = await budgetService.CreateMonthlyBudgetAsync(userId, request);
+        var result = await budgetService.CreateMonthlyBudgetAsync(GetUserId(), request);
         return CreatedAtAction(nameof(GetMonthlyBudgetById), new { id = result.Id }, result);
     }
 
@@ -49,13 +46,13 @@ public class MonthlyBudgetController(
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult<IEnumerable<HistoryResponse>>> UpdateMonthlyBudgetStatus(Guid id, UpdateBudgetStatusRequest request)
+    public async Task<ActionResult<MonthlyBudgetResponse>> UpdateMonthlyBudgetStatus(Guid id, UpdateBudgetStatusRequest request)
     {
         return Ok(await budgetService.UpdateMonthlyBudgetStatusAsync(GetUserId(), id, request));
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<IEnumerable<HistoryResponse>>> DeleteMonthlyBudget(Guid id)
+    public async Task<ActionResult<DeletedBudgetResponse>> DeleteMonthlyBudget(Guid id)
     {
         return Ok(await budgetService.DeleteMonthlyBudgetAsync(GetUserId(), id));
     }
@@ -97,26 +94,26 @@ public class MonthlyBudgetController(
     }
 
     [HttpPost("{id}/expenses")]
-    public async Task<ActionResult<ExpenseOperationResponse<IEnumerable<ExpenseResponse>>>> CreateMonthlyExpenses(Guid id, ICollection<ExpenseRequest> request)
+    public async Task<ActionResult<ExpenseOperationResponse<IEnumerable<MonthlyExpenseResponse>>>> CreateMonthlyExpenses(Guid id, ICollection<MonthlyExpenseRequest> request)
     {
-        return Ok(await expenseService.CreateExpensesAsync(GetUserId(), id, BudgetType.Monthly, request));
+        return Ok(await expenseService.CreateMonthlyExpensesAsync(GetUserId(), id, request));
     }
 
     [HttpPut("{id}/expenses/{expenseId}")]
-    public async Task<ActionResult<ExpenseOperationResponse<ExpenseResponse>>> UpdateMonthlyExpense(Guid id, Guid expenseId, ExpenseRequest request)
+    public async Task<ActionResult<ExpenseOperationResponse<MonthlyExpenseResponse>>> UpdateMonthlyExpense(Guid id, Guid expenseId, MonthlyExpenseRequest request)
     {
-        return Ok(await expenseService.UpdateExpenseAsync(GetUserId(), id, expenseId, BudgetType.Monthly, request));
+        return Ok(await expenseService.UpdateMonthlyExpenseAsync(GetUserId(), id, expenseId, request));
     }
 
     [HttpPatch("{id}/expenses/{expenseId}/cashed")]
-    public async Task<ActionResult<ExpenseResponse>> UpdateMonthlyExpenseValidation(Guid id, Guid expenseId, UpdateExpenseValidationRequest request)
+    public async Task<ActionResult<MonthlyExpenseResponse>> UpdateMonthlyExpenseValidation(Guid id, Guid expenseId, UpdateExpenseValidationRequest request)
     {
-        return Ok(await expenseService.UpdateExpenseValidationAsync(GetUserId(), id, expenseId, BudgetType.Monthly, request));
+        return Ok(await expenseService.UpdateMonthlyExpenseValidationAsync(GetUserId(), id, expenseId, request));
     }
 
     [HttpDelete("{id}/expenses/{expenseId}")]
     public async Task<ActionResult<ExpenseOperationResponse<DeletedExpenseResponse>>> DeleteMonthlyExpense(Guid id, Guid expenseId)
     {
-        return Ok(await expenseService.DeleteExpenseAsync(GetUserId(), id, expenseId, BudgetType.Monthly));
+        return Ok(await expenseService.DeleteMonthlyExpenseAsync(GetUserId(), id, expenseId));
     }
 }

@@ -7,6 +7,7 @@ using MoneyMood.Middlewares;
 using MoneyMood.Services;
 using MoneyMood.Services.Auth;
 using MoneyMood.Services.Budget;
+using MoneyMood.Services.Project;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,9 +24,15 @@ builder.Services.AddControllers(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<ISessionService, SessionService>();
+
 builder.Services.AddScoped<IMonthlyBudgetService, MonthlyBudgetService>();
 builder.Services.AddScoped<IMonthlyEntryService, MonthlyEntryService>();
-builder.Services.AddScoped<IExpenseService, ExpenseService>();
+builder.Services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
+
+builder.Services.AddScoped<ISpecialBudgetService, SpecialBudgetService>();
+builder.Services.AddScoped<ISpecialCategoryService, SpecialCategoryService>();
+builder.Services.AddScoped<ISpecialExpenseService, SpecialExpenseService>();
+
 builder.Services.AddScoped<IBudgetCalculationService, BudgetCalculationService>();
 
 
