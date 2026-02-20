@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using MoneyMood.Auth;
 using MoneyMood.Data;
 using MoneyMood.Middlewares;
-using MoneyMood.Services;
 using MoneyMood.Services.Auth;
 using MoneyMood.Services.Budget;
+using MoneyMood.Services.FixedUserEntry;
 using MoneyMood.Services.Project;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +32,8 @@ builder.Services.AddScoped<IMonthlyExpenseService, MonthlyExpenseService>();
 builder.Services.AddScoped<ISpecialBudgetService, SpecialBudgetService>();
 builder.Services.AddScoped<ISpecialCategoryService, SpecialCategoryService>();
 builder.Services.AddScoped<ISpecialExpenseService, SpecialExpenseService>();
+
+builder.Services.AddScoped<IFixedEntryService, FixedEntryService>();
 
 builder.Services.AddScoped<IBudgetCalculationService, BudgetCalculationService>();
 

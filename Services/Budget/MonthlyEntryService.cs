@@ -34,10 +34,8 @@ public class MonthlyEntryService(AppDbContext context, IBudgetCalculationService
         await EnsureBudgetAccessAsync(userId, budgetId);
 
         var entry = await context.MonthlyEntries
-            .FirstOrDefaultAsync(e => e.Id == entryId && e.MonthlyBudgetId == budgetId);
-
-        if (entry is null)
-            throw ApiException.NotFound("Entrée non trouvée ou non liée au budget");
+            .FirstOrDefaultAsync(e => e.Id == entryId && e.MonthlyBudgetId == budgetId)
+            ?? throw ApiException.NotFound("Entrée non trouvée ou non liée au budget");
 
         entry.Name = request.Name;
         entry.Amount = request.Amount;
