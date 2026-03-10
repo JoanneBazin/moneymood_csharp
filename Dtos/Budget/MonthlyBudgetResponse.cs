@@ -1,4 +1,3 @@
-using MoneyMood.Dtos.Expense;
 
 namespace MoneyMood.Dtos.Budget;
 
@@ -11,7 +10,7 @@ public class MonthlyBudgetResponse
     public decimal RemainingBudget { get; set; }
     public decimal WeeklyBudget { get; set; }
     public int NumberOfWeeks { get; set; }
-    public IEnumerable<ExpenseResponse> Expenses { get; set; } = [];
+    public IEnumerable<MonthlyExpenseResponse> Expenses { get; set; } = [];
     public IEnumerable<EntryResponse> Incomes { get; set; } = [];
     public IEnumerable<EntryResponse> Charges { get; set; } = [];
 }

@@ -63,7 +63,7 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
     public async Task<HistoryResponse> GetMonthlyBudgetByDateAsync(Guid userId, int month, int year)
     {
         var budget = await context.MonthlyBudgets
-            .FirstOrDefaultAsync(b => b.UserId == userId && b.Year == year && b.Month == month) ?? throw ApiException.NotFound("Budget mensuel introuvable");
+            .FirstOrDefaultAsync(b => b.UserId == userId && b.Year == year && b.Month == month && !b.IsCurrent) ?? throw ApiException.NotFound("Budget mensuel introuvable dans l'historique");
         
         return MapToHistoryResponse(budget);
     }
@@ -172,7 +172,9 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
         Charges = budget.MonthlyEntries
             .Where(e => e.Type == EntryType.Charge)
             .Select(e => new EntryResponse {Id = e.Id, Name = e.Name, Amount = e.Amount}),
-            Expenses = []
+        Expenses = budget.Expenses
+            .Select(e => new MonthlyExpenseResponse { Id = e.Id, Name = e.Name, Amount = e.Amount, Cashed = e.Cashed, WeekNumber = e.WeekNumber 
+            ?? throw ApiException.BadRequest("Dépense mensuelle non attribuée à une semaine")})
     };
     private static HistoryResponse MapToHistoryResponse(MonthlyBudget budget) => new()
     {
