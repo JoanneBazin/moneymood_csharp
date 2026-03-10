@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using MoneyMood.Dtos.Category;
 using MoneyMood.Dtos.Expense;
 using MoneyMood.Dtos.Project;
-using MoneyMood.Models;
 using MoneyMood.Services.Project;
 
 namespace MoneyMood.Controllers;

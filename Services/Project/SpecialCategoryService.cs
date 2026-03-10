@@ -44,6 +44,7 @@ public class SpecialCategoryService(AppDbContext context, IBudgetCalculationServ
         await EnsureBudgetAccessAsync(userId, budgetId);
 
         var category = await context.SpecialCategories
+            .Include(c => c.Expenses)
             .FirstOrDefaultAsync(e => e.Id == categoryId && e.SpecialBudgetId == budgetId)
             ?? throw ApiException.NotFound("Dépense non trouvée ou non liée au budget");
 
