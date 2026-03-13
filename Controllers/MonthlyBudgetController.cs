@@ -100,7 +100,7 @@ public class MonthlyBudgetController(
     }
 
     [HttpPut("{id}/expenses/{expenseId}")]
-    public async Task<ActionResult<ExpenseOperationResponse<MonthlyExpenseResponse>>> UpdateMonthlyExpense(Guid id, Guid expenseId, MonthlyExpenseRequest request)
+    public async Task<ActionResult<ExpenseOperationResponse<MonthlyExpenseResponse>>> UpdateMonthlyExpense(Guid id, Guid expenseId, ExpenseRequest request)
     {
         return Ok(await expenseService.UpdateMonthlyExpenseAsync(GetUserId(), id, expenseId, request));
     }

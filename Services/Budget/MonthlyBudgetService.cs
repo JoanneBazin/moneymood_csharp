@@ -121,10 +121,10 @@ public class MonthlyBudgetService(AppDbContext context, IBudgetCalculationServic
                 .FirstOrDefaultAsync(b => b.Id == budgetId && b.UserId == userId)
                 ?? throw ApiException.NotFound("Budget non trouvé ou vous n'avez pas les droits d'accès");
 
-            budget.IsCurrent = request.IsCurrent;
+            budget.IsCurrent = request.IsCurrent!.Value;
             await context.SaveChangesAsync();   
 
-            if (request.IsCurrent)
+            if (request.IsCurrent!.Value)
             {
                 await context.MonthlyBudgets
                     .Where(b => b.UserId == userId && b.Id != budget.Id)
