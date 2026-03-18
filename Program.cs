@@ -4,6 +4,7 @@ using MoneyMood.Auth;
 using MoneyMood.Configuration;
 using MoneyMood.Data;
 using MoneyMood.Middlewares;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +14,8 @@ builder.Services.AddAuthentication("SessionAuth").AddScheme<AuthenticationScheme
 
 builder.Services.ConfigureValidation();
 builder.Services.AddEndpointsApiExplorer();
-
-builder.Services.ConfigureApplicationServices();
-
 builder.Services.AddOpenApi();
+builder.Services.ConfigureApplicationServices();
 
 var app = builder.Build();
 
@@ -24,6 +23,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
