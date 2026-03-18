@@ -31,7 +31,7 @@ public class SpecialBudgetService(AppDbContext context, IBudgetCalculationServic
         return await context.SpecialBudgets
             .Where(b => b.UserId == userId)
             .OrderByDescending(b => b.CreatedAt)
-            .Select(b => new SpecialBudgetListResponse { Id = b.Id, Name = b.Name, CreatedAt = b.CreatedAt })
+            .Select(b => new SpecialBudgetListResponse { Id = b.Id, Name = b.Name, CreatedAt = b.CreatedAt.ToString("dd/MM/yyyy") })
             .ToListAsync();
     }
 
@@ -83,7 +83,7 @@ public class SpecialBudgetService(AppDbContext context, IBudgetCalculationServic
         Name = budget.Name,
         TotalBudget = budget.TotalBudget,
         RemainingBudget = budget.RemainingBudget,
-        CreatedAt = budget.CreatedAt,
+        CreatedAt = budget.CreatedAt.ToString("dd/MM/yyyy"),
         Expenses = budget.Expenses
             .Where(e => e.SpecialCategoryId == null)
             .Select(e => new SpecialExpenseResponse {Id = e.Id, Name = e.Name, Amount = e.Amount, Cashed = e.Cashed, SpecialCategoryId = e.SpecialCategoryId, CreatedAt = e.CreatedAt}),

@@ -8,7 +8,7 @@ public class SpecialBudgetResponse
     public string Name { get; set; } = string.Empty;
     public decimal TotalBudget { get; set; }
     public decimal RemainingBudget { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public string CreatedAt { get; set; } = string.Empty;
     public IEnumerable<SpecialExpenseResponse> Expenses { get; set; } = [];
     public IEnumerable<CategoryResponse> Categories { get; set; } = [];
 }
