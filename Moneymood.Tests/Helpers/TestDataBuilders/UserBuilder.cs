@@ -1,4 +1,5 @@
 using MoneyMood.Data;
+using MoneyMood.Dtos.Auth;
 using MoneyMood.Models;
 
 namespace Moneymood.Tests.Helpers.TestDataBuilders;
@@ -26,7 +27,7 @@ public class UserBuilder
         return this;
     }
 
-    public async Task<UserData> BuildAndSaveAsync(AppDbContext db)
+    public async Task<UserResponse> BuildAndSaveAsync(AppDbContext db)
     {
         var user = new User
         {
@@ -37,18 +38,20 @@ public class UserBuilder
 
         db.Users.Add(user);
         await db.SaveChangesAsync();
-        return MapToReturn();
+        return new UserResponse
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Name = user.Name,
+            EnabledExpenseValidation = user.EnabledExpenseValidation
+        };
     }
 
     public UserData Build()
     {
-        return MapToReturn();
+         return new UserData(_email, _password, _name);
     }
-
-    private UserData MapToReturn()
-    {
-        return new UserData(_email, _password, _name);
-    }
+    
 
     public record UserData(string Email, string Password, string Name);
 }

@@ -8,7 +8,7 @@ namespace MoneyMood.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IAuthService service) : BaseController
+public class AuthController(IAuthService service, IHostEnvironment env) : BaseController
 {
     [AllowAnonymous]    
     [HttpPost("signup")]
@@ -16,10 +16,12 @@ public class AuthController(IAuthService service) : BaseController
     {
         var result = await service.SignUpAsync(request);
 
+        var isTestEnv = env.EnvironmentName == "Testing";
+
         Response.Cookies.Append("session", result.SessionToken.ToString(), new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
+            Secure = !isTestEnv,
             SameSite = SameSiteMode.Lax,
             Path = "/",
             MaxAge = TimeSpan.FromDays(30)
@@ -33,10 +35,12 @@ public class AuthController(IAuthService service) : BaseController
     {
         var result = await service.SignInAsync(request);
 
+        var isTestEnv = env.EnvironmentName == "Testing";
+
         Response.Cookies.Append("session", result.SessionToken.ToString(), new CookieOptions
         {
             HttpOnly = true,
-            Secure = true,
+            Secure = !isTestEnv,
             SameSite = SameSiteMode.Lax,
             Path = "/",
             MaxAge = TimeSpan.FromDays(30)

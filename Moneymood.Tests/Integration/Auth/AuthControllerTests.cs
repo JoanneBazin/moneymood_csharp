@@ -6,8 +6,9 @@ using MoneyMood.Tests.Fixtures;
 using MoneyMood.Tests.Base;
 using Microsoft.EntityFrameworkCore;
 using Moneymood.Tests.Helpers.TestDataBuilders;
+using Moneymood.Tests.Shared;
 
-namespace MoneyMood.Tests.Integration;
+namespace MoneyMood.Tests.Integration.Auth;
 
 public class AuthControllerTests(DatabaseFixture dbFixture) : IntegrationTestBase(dbFixture)
 {
@@ -36,8 +37,8 @@ public class AuthControllerTests(DatabaseFixture dbFixture) : IntegrationTestBas
         var sessionCookie = cookies!.FirstOrDefault(c => c.StartsWith("session="));
         sessionCookie.Should().NotBeNullOrEmpty();
 
-        using var db = GetDbContext();
-        var userInDb = await db.Users.FirstOrDefaultAsync(u => u.Email == signupRequest.email);
+        using var dbCheck = GetDbContext();
+        var userInDb = await dbCheck.Users.FirstOrDefaultAsync(u => u.Email == signupRequest.email);
         userInDb.Should().NotBeNull();
     }
 
@@ -66,8 +67,8 @@ public class AuthControllerTests(DatabaseFixture dbFixture) : IntegrationTestBas
             sessionCookie.Should().BeNullOrEmpty();
         };
 
-        using var db = GetDbContext();
-        var userInDb = await db.Users.FirstOrDefaultAsync(u => u.Email == signupRequest.email);
+        using var dbCheck = GetDbContext();
+        var userInDb = await dbCheck.Users.FirstOrDefaultAsync(u => u.Email == signupRequest.email);
         userInDb.Should().BeNull();
     }
 
@@ -75,12 +76,16 @@ public class AuthControllerTests(DatabaseFixture dbFixture) : IntegrationTestBas
     public async Task SignIn_WithValidCredentials_ReturnsOkAndUser()
     {
         await ResetDb();
+        var password = "Password1234";
+
         using var db = GetDbContext();
-        var user = await new UserBuilder().BuildAndSaveAsync(db);
+        var user = await new UserBuilder()
+            .WithPassword(password)
+            .BuildAndSaveAsync(db);
         var signInRequest = new
         {
             email = user.Email,
-            password = user.Password,
+            password,
         };
 
         var response = await Client.PostAsJsonAsync("/api/auth/login", signInRequest);
@@ -129,12 +134,10 @@ public class AuthControllerTests(DatabaseFixture dbFixture) : IntegrationTestBas
     public async Task SignIn_WithUnknownEmail_ReturnsUnauthorized()
     {
         await ResetDb();
-        using var db = GetDbContext();
-        var user = await new UserBuilder().BuildAndSaveAsync(db);
         var signInRequest = new
         {
             email = "wrong-email@exemple.com",
-            password = user.Password,
+            password = "RandomPass1234",
         };
 
         var response = await Client.PostAsJsonAsync("/api/auth/login", signInRequest);
@@ -152,5 +155,5 @@ public class AuthControllerTests(DatabaseFixture dbFixture) : IntegrationTestBas
         };
     }
 
-    public record ErrorResponse(string Error);
+    
 }

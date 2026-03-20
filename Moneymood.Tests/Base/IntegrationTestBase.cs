@@ -37,5 +37,10 @@ public abstract class IntegrationTestBase : IAsyncLifetime
         var scope = Factory.Services.CreateScope();
         return scope.ServiceProvider.GetRequiredService<AppDbContext>();
     }
+
+    protected AuthHelper CreateAuthHelper()
+    {
+        return new AuthHelper(Client, GetDbContext);
+    }
     
 }
